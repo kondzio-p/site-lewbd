@@ -124,7 +124,7 @@
 				inset: 0;
 				background: var(--accent);
 				transform: translateX(-100%);
-				animation: barFill 1.5s ease-out forwards;
+				animation: barFill 2s ease-out forwards;
 			}
 			@keyframes barFill {
 				to {
@@ -263,9 +263,7 @@
 				width: 24px;
 				height: 2px;
 				background: var(--ink);
-				transition:
-					transform 0.35s cubic-bezier(0.7, 0, 0.2, 1),
-					opacity 0.25s;
+				transition: transform 0.35s cubic-bezier(0.7,0,0.2,1), opacity 0.25s;
 			}
 
 			/* ======= HERO ======= */
@@ -1310,15 +1308,9 @@
 				}
 
 				/* hamburger → X */
-				.menu-toggle span:nth-child(1) {
-					transform-origin: center;
-				}
-				.menu-toggle span:nth-child(2) {
-					transform-origin: center;
-				}
-				.menu-toggle span:nth-child(3) {
-					transform-origin: center;
-				}
+				.menu-toggle span:nth-child(1) { transform-origin: center; }
+				.menu-toggle span:nth-child(2) { transform-origin: center; }
+				.menu-toggle span:nth-child(3) { transform-origin: center; }
 				.menu-toggle.is-open span:nth-child(1) {
 					transform: translateY(8px) rotate(45deg);
 				}
@@ -1752,7 +1744,7 @@
 				<h2 class="section-title reveal">Zakres <em>usług</em>.</h2>
 
 				<div class="services-grid">
-					<article class="service reveal">
+					<article class="service">
 						<div class="num">01</div>
 						<svg
 							class="icon"
@@ -1771,7 +1763,7 @@
 						</p>
 					</article>
 
-					<article class="service reveal">
+					<article class="service">
 						<div class="num">02</div>
 						<svg
 							class="icon"
@@ -1790,7 +1782,7 @@
 						</p>
 					</article>
 
-					<article class="service reveal">
+					<article class="service">
 						<div class="num">03</div>
 						<svg
 							class="icon"
@@ -1810,7 +1802,7 @@
 						</p>
 					</article>
 
-					<article class="service reveal">
+					<article class="service">
 						<div class="num">04</div>
 						<svg
 							class="icon"
@@ -1832,7 +1824,7 @@
 						</p>
 					</article>
 
-					<article class="service reveal">
+					<article class="service">
 						<div class="num">05</div>
 						<svg
 							class="icon"
@@ -1852,7 +1844,7 @@
 						</p>
 					</article>
 
-					<article class="service reveal">
+					<article class="service">
 						<div class="num">06</div>
 						<svg
 							class="icon"
@@ -1897,7 +1889,7 @@
 
 				<div class="gallery">
 					<!-- g-big: 2col × 2row — duże, panoramiczne. Modernizacja biurowca -->
-					<div class="gallery-item g-big reveal">
+					<div class="gallery-item g-big">
 						<img
 							src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=85"
 							alt="Realizacja 1"
@@ -1912,7 +1904,7 @@
 					</div>
 
 					<!-- g-tall: 1col × 2row — pionowe. Dom jednorodzinny -->
-					<div class="gallery-item g-tall reveal">
+					<div class="gallery-item g-tall">
 						<img
 							src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&q=85"
 							alt="Realizacja 2"
@@ -1926,7 +1918,7 @@
 					</div>
 
 					<!-- 1×1 — Posadzka przemysłowa / hala -->
-					<div class="gallery-item reveal">
+					<div class="gallery-item">
 						<img
 							src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=85"
 							alt="Realizacja 3"
@@ -1938,7 +1930,7 @@
 					</div>
 
 					<!-- 1×1 — Prace wykończeniowe, tynki -->
-					<div class="gallery-item reveal">
+					<div class="gallery-item">
 						<img
 							src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85"
 							alt="Realizacja 4"
@@ -1950,7 +1942,7 @@
 					</div>
 
 					<!-- g-wide: 2col × 1row — szerokie. Hotel / nadbudowa -->
-					<div class="gallery-item g-wide reveal">
+					<div class="gallery-item g-wide">
 						<img
 							src="https://images.unsplash.com/photo-1555636222-cae831e670b3?w=1200&q=85"
 							alt="Realizacja 5"
@@ -1965,7 +1957,7 @@
 					</div>
 
 					<!-- g-wide: 2col × 1row — hala warsztatowa -->
-					<div class="gallery-item g-wide reveal">
+					<div class="gallery-item g-wide">
 						<img
 							src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=85"
 							alt="Realizacja 6"
@@ -1980,7 +1972,7 @@
 					</div>
 
 					<!-- g-tall: 1col × 2row — budynek po remoncie elewacji -->
-					<div class="gallery-item g-tall reveal">
+					<div class="gallery-item g-tall">
 						<img
 							src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=85"
 							alt="Realizacja 7"
@@ -2169,7 +2161,7 @@
 		<script>
 			/* ========== LOADER + REVEAL ========== */
 			const PAGE_OPEN_TIME = performance.now();
-			const MIN_LOADER = 1500;
+			const MIN_LOADER = 2000;
 			let entranceFired = false;
 
 			function dismissLoader() {
@@ -2261,40 +2253,7 @@
 						);
 					});
 
-				/* GALLERY ITEMS - extra subtle stagger */
-				gsap.fromTo(
-					".gallery-item",
-					{ opacity: 0, y: 40, scale: 0.97 },
-					{
-						opacity: 1,
-						y: 0,
-						scale: 1,
-						duration: 0.8,
-						stagger: 0.07,
-						ease: "power3.out",
-						scrollTrigger: {
-							trigger: ".gallery",
-							start: "top 85%",
-						},
-					},
-				);
 
-				/* SERVICE CARDS stagger */
-				gsap.fromTo(
-					".service",
-					{ opacity: 0, y: 30 },
-					{
-						opacity: 1,
-						y: 0,
-						duration: 0.7,
-						stagger: 0.08,
-						ease: "power3.out",
-						scrollTrigger: {
-							trigger: ".services-grid",
-							start: "top 82%",
-						},
-					},
-				);
 
 				/* HERO BG subtle parallax */
 				gsap.to(".hero-bg", {
@@ -2445,12 +2404,12 @@
 			/* ========== MOBILE MENU (GSAP) ========== */
 			(function initMobileMenu() {
 				const toggle = document.getElementById("menuToggle");
-				const nav = document.getElementById("nav");
+				const nav    = document.getElementById("nav");
 				if (!toggle || !nav) return;
 
 				const links = nav.querySelectorAll("a");
-				let isOpen = false;
-				let tl = null;
+				let isOpen  = false;
+				let tl      = null;
 
 				function buildTimeline() {
 					if (tl) tl.kill();
@@ -2460,17 +2419,14 @@
 						clipPath: "inset(0 0 0% 0)",
 						duration: 0.42,
 						ease: "power3.out",
-					}).to(
-						links,
-						{
-							opacity: 1,
-							y: 0,
-							duration: 0.32,
-							stagger: 0.055,
-							ease: "power2.out",
-						},
-						"-=0.18",
-					);
+					})
+					.to(links, {
+						opacity: 1,
+						y: 0,
+						duration: 0.32,
+						stagger: 0.055,
+						ease: "power2.out",
+					}, "-=0.18");
 
 					return tl;
 				}
@@ -2499,21 +2455,17 @@
 								ease: "power3.in",
 								onComplete() {
 									nav.classList.remove("is-open");
-								},
+								}
 							});
-						},
+						}
 					});
 				}
 
-				toggle.addEventListener("click", () =>
-					isOpen ? close() : open(),
-				);
+				toggle.addEventListener("click", () => isOpen ? close() : open());
 
-				links.forEach((a) =>
-					a.addEventListener("click", () => {
-						if (isOpen) close();
-					}),
-				);
+				links.forEach(a => a.addEventListener("click", () => {
+					if (isOpen) close();
+				}));
 			})();
 		</script>
 	</body>
