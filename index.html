@@ -1,0 +1,2520 @@
+<!doctype html>
+<html lang="pl">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>LEW-BUD — Usługi remontowo-budowlane | Chojnice</title>
+		<meta
+			name="description"
+			content="LEW-BUD Sp. z o.o. — budowa domów pod klucz, maszynowe wylewanie posadzek, tynki cementowo-wapienne, prace wykończeniowe. Pawłówko k. Chojnic."
+		/>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Archivo:wght@600;700;800;900&display=swap"
+			rel="stylesheet"
+		/>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+		<style>
+			:root {
+				--bg: #0e0e10;
+				--bg-2: #15151a;
+				--surface: #1c1c22;
+				--line: #2a2a32;
+				--ink: #f5f5f0;
+				--ink-dim: #a8a8a0;
+				--ink-mute: #6b6b66;
+				--accent: #f5b400; /* construction yellow */
+				--accent-2: #ff7a1a; /* safety orange */
+				--danger: #c1121f;
+				--max: 1280px;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			html {
+				scroll-behavior: smooth;
+			}
+
+			body {
+				background: var(--bg);
+				color: var(--ink);
+				font-family: "Manrope", sans-serif;
+				font-weight: 400;
+				line-height: 1.6;
+				overflow-x: hidden;
+				-webkit-font-smoothing: antialiased;
+			}
+
+			/* ======= LOADER ======= */
+			#loader {
+				position: fixed;
+				inset: 0;
+				background: var(--bg);
+				z-index: 9999;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;
+				gap: 28px;
+				transition:
+					opacity 0.6s ease,
+					visibility 0.6s;
+			}
+			#loader.done {
+				opacity: 0;
+				visibility: hidden;
+				pointer-events: none;
+			}
+
+			.loader-logo {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: clamp(64px, 12vw, 140px);
+				letter-spacing: 0.08em;
+				line-height: 1;
+				color: var(--ink);
+				position: relative;
+				display: flex;
+				align-items: baseline;
+				gap: 6px;
+				animation: logoPulse 1s ease-in-out infinite;
+			}
+			.loader-logo .dash {
+				width: clamp(22px, 4vw, 50px);
+				height: clamp(8px, 1.4vw, 14px);
+				background: var(--accent);
+				display: inline-block;
+				margin: 0 4px;
+				transform: translateY(-0.18em);
+			}
+			.loader-logo .accent {
+				color: var(--accent);
+			}
+
+			@keyframes logoPulse {
+				0%,
+				100% {
+					transform: scale(1);
+					opacity: 0.92;
+				}
+				50% {
+					transform: scale(1.04);
+					opacity: 1;
+				}
+			}
+
+			.loader-bar {
+				width: 200px;
+				height: 2px;
+				background: var(--line);
+				position: relative;
+				overflow: hidden;
+			}
+			.loader-bar::after {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background: var(--accent);
+				transform: translateX(-100%);
+				animation: barFill 1.5s ease-out forwards;
+			}
+			@keyframes barFill {
+				to {
+					transform: translateX(0);
+				}
+			}
+
+			/* ======= GRAIN OVERLAY ======= */
+			.grain {
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				z-index: 1000;
+				opacity: 0.04;
+				background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+				mix-blend-mode: overlay;
+			}
+
+			/* ======= HEADER ======= */
+			header {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				z-index: 100;
+				padding: 22px 40px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				background: rgba(14, 14, 16, 0.55);
+				backdrop-filter: blur(14px);
+				-webkit-backdrop-filter: blur(14px);
+				border-bottom: 1px solid transparent;
+				transition:
+					border-color 0.3s,
+					padding 0.3s,
+					background 0.3s;
+			}
+			header.scrolled {
+				padding: 14px 40px;
+				border-bottom-color: var(--line);
+				background: rgba(14, 14, 16, 0.85);
+			}
+
+			.brand {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 28px;
+				letter-spacing: 0.08em;
+				color: var(--ink);
+				text-decoration: none;
+				display: flex;
+				align-items: center;
+				gap: 4px;
+			}
+			.brand .dash {
+				width: 18px;
+				height: 5px;
+				background: var(--accent);
+				margin: 0 2px;
+				display: inline-block;
+				transform: translateY(-3px);
+			}
+
+			nav ul {
+				list-style: none;
+				display: flex;
+				gap: 4px;
+			}
+			nav a {
+				color: var(--ink-dim);
+				text-decoration: none;
+				font-size: 13px;
+				font-weight: 600;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				padding: 10px 18px;
+				position: relative;
+				transition: color 0.25s;
+			}
+			nav a::before {
+				content: "";
+				position: absolute;
+				left: 18px;
+				right: 18px;
+				bottom: 4px;
+				height: 1px;
+				background: var(--accent);
+				transform: scaleX(0);
+				transform-origin: left;
+				transition: transform 0.35s cubic-bezier(0.7, 0, 0.2, 1);
+			}
+			nav a:hover {
+				color: var(--ink);
+			}
+			nav a:hover::before {
+				transform: scaleX(1);
+			}
+			nav a.active {
+				color: var(--accent);
+			}
+
+			.nav-cta {
+				font-family: "Manrope", sans-serif;
+				font-size: 13px;
+				font-weight: 700;
+				letter-spacing: 0.05em;
+				text-transform: uppercase;
+				background: var(--accent);
+				color: var(--bg);
+				padding: 12px 22px;
+				border: none;
+				text-decoration: none;
+				cursor: pointer;
+				transition:
+					background 0.25s,
+					transform 0.25s;
+			}
+			.nav-cta:hover {
+				background: var(--ink);
+				transform: translateY(-1px);
+			}
+
+			.menu-toggle {
+				display: none;
+				background: none;
+				border: none;
+				cursor: pointer;
+				width: 32px;
+				height: 32px;
+				flex-direction: column;
+				justify-content: center;
+				gap: 6px;
+			}
+			.menu-toggle span {
+				display: block;
+				width: 24px;
+				height: 2px;
+				background: var(--ink);
+				transition:
+					transform 0.35s cubic-bezier(0.7, 0, 0.2, 1),
+					opacity 0.25s;
+			}
+
+			/* ======= HERO ======= */
+			.hero {
+				min-height: 100vh;
+				position: relative;
+				display: flex;
+				align-items: center;
+				padding: 120px 40px 60px;
+				overflow: hidden;
+			}
+
+			.hero-bg {
+				position: absolute;
+				inset: 0;
+				z-index: 0;
+				background-image:
+					linear-gradient(
+						135deg,
+						rgba(14, 14, 16, 0.78) 0%,
+						rgba(14, 14, 16, 0.55) 50%,
+						rgba(14, 14, 16, 0.92) 100%
+					),
+					url("https://images.unsplash.com/photo-1563166423-482a8c14b2d6?q=80&w=1170");
+				background-size: cover;
+				background-position: center;
+				background-attachment: fixed;
+				filter: saturate(1.05);
+			}
+			.hero-bg::after {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background: repeating-linear-gradient(
+					90deg,
+					transparent 0,
+					transparent 79px,
+					rgba(255, 255, 255, 0.025) 79px,
+					rgba(255, 255, 255, 0.025) 80px
+				);
+			}
+
+			.hero-inner {
+				position: relative;
+				z-index: 2;
+				max-width: var(--max);
+				margin: 0 auto;
+				width: 100%;
+				display: grid;
+				grid-template-columns: 1fr auto;
+				gap: 60px;
+				align-items: end;
+			}
+
+			.hero-meta {
+				display: flex;
+				flex-direction: column;
+				gap: 18px;
+				margin-bottom: 30px;
+			}
+
+			.hero-eyebrow {
+				display: flex;
+				align-items: center;
+				gap: 14px;
+				font-size: 12px;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				color: var(--accent);
+				font-weight: 700;
+			}
+			.hero-eyebrow::before {
+				content: "";
+				width: 40px;
+				height: 1px;
+				background: var(--accent);
+			}
+
+			h1.hero-title {
+				font-family: "Archivo", sans-serif;
+				font-weight: 900;
+				font-size: clamp(48px, 8vw, 128px);
+				line-height: 0.92;
+				letter-spacing: -0.025em;
+				color: var(--ink);
+				text-transform: uppercase;
+			}
+			h1.hero-title .line {
+				display: block;
+				overflow: hidden;
+			}
+			h1.hero-title .line span {
+				display: block;
+			}
+			h1.hero-title em {
+				font-style: normal;
+				color: var(--accent);
+				position: relative;
+			}
+
+			.hero-aside {
+				display: flex;
+				flex-direction: column;
+				gap: 28px;
+				max-width: 320px;
+				margin-bottom: 30px;
+			}
+
+			.hero-aside p {
+				color: var(--ink-dim);
+				font-size: 15px;
+				line-height: 1.7;
+			}
+
+			.hero-stats {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 28px;
+				border-top: 1px solid var(--line);
+				padding-top: 24px;
+			}
+			.hero-stats .num {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 44px;
+				line-height: 1;
+				color: var(--accent);
+			}
+			.hero-stats .lbl {
+				font-size: 11px;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--ink-mute);
+				margin-top: 4px;
+			}
+
+			.hero-cta-row {
+				display: flex;
+				gap: 14px;
+				flex-wrap: wrap;
+			}
+			.btn {
+				font-family: "Manrope", sans-serif;
+				font-size: 13px;
+				font-weight: 700;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				padding: 16px 28px;
+				text-decoration: none;
+				display: inline-flex;
+				align-items: center;
+				gap: 10px;
+				cursor: pointer;
+				border: none;
+				transition: all 0.25s;
+				position: relative;
+			}
+			.btn-primary {
+				background: var(--accent);
+				color: var(--bg);
+			}
+			.btn-primary:hover {
+				background: var(--ink);
+				transform: translateY(-2px);
+			}
+			.btn-ghost {
+				background: transparent;
+				color: var(--ink);
+				border: 1px solid var(--line);
+			}
+			.btn-ghost:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+			.btn .arrow {
+				transition: transform 0.25s;
+			}
+			.btn:hover .arrow {
+				transform: translateX(4px);
+			}
+
+			.scroll-hint {
+				position: absolute;
+				bottom: 30px;
+				left: 50%;
+				transform: translateX(-50%);
+				font-size: 10px;
+				letter-spacing: 0.3em;
+				text-transform: uppercase;
+				color: var(--ink-mute);
+				z-index: 3;
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+			.scroll-hint::before,
+			.scroll-hint::after {
+				content: "";
+				width: 28px;
+				height: 1px;
+				background: var(--ink-mute);
+			}
+
+			/* ======= MARQUEE / SERVICES STRIP ======= */
+			.marquee {
+				background: var(--accent);
+				color: var(--bg);
+				padding: 22px 0;
+				overflow: hidden;
+				position: relative;
+				border-top: 1px solid #000;
+				border-bottom: 1px solid #000;
+			}
+			.marquee-track {
+				display: flex;
+				gap: 50px;
+				white-space: nowrap;
+				animation: marquee 30s linear infinite;
+				font-family: "Archivo", sans-serif;
+				font-weight: 800;
+				font-size: 28px;
+				letter-spacing: -0.01em;
+				text-transform: uppercase;
+				width: max-content;
+			}
+			.marquee-track span {
+				display: inline-flex;
+				align-items: center;
+				gap: 50px;
+			}
+			.marquee-track .dot {
+				width: 10px;
+				height: 10px;
+				background: var(--bg);
+				border-radius: 50%;
+				display: inline-block;
+			}
+			@keyframes marquee {
+				from {
+					transform: translateX(0);
+				}
+				to {
+					transform: translateX(-50%);
+				}
+			}
+
+			/* ======= SECTION GENERIC ======= */
+			section.s {
+				padding: 140px 40px;
+				position: relative;
+			}
+			.container {
+				max-width: var(--max);
+				margin: 0 auto;
+			}
+			.section-label {
+				display: flex;
+				align-items: center;
+				gap: 14px;
+				font-size: 11px;
+				letter-spacing: 0.22em;
+				text-transform: uppercase;
+				color: var(--accent);
+				font-weight: 700;
+				margin-bottom: 24px;
+			}
+			.section-label::before {
+				content: "";
+				width: 30px;
+				height: 1px;
+				background: var(--accent);
+			}
+			.section-num {
+				position: absolute;
+				top: 60px;
+				right: 40px;
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 14px;
+				letter-spacing: 0.2em;
+				color: var(--ink-mute);
+			}
+
+			h2.section-title {
+				font-family: "Archivo", sans-serif;
+				font-weight: 900;
+				font-size: clamp(40px, 6vw, 88px);
+				line-height: 0.95;
+				letter-spacing: -0.02em;
+				text-transform: uppercase;
+				color: var(--ink);
+				margin-bottom: 60px;
+				max-width: 16ch;
+			}
+			h2.section-title em {
+				font-style: normal;
+				color: var(--accent);
+			}
+
+			/* ======= ABOUT ======= */
+			#firma {
+				background: var(--bg);
+			}
+
+			.about-grid {
+				display: grid;
+				grid-template-columns: 1.1fr 1fr;
+				gap: 80px;
+				align-items: start;
+			}
+			.about-text p {
+				color: var(--ink-dim);
+				font-size: 17px;
+				line-height: 1.75;
+				margin-bottom: 20px;
+			}
+			.about-text p strong {
+				color: var(--ink);
+				font-weight: 700;
+			}
+
+			.about-image {
+				position: relative;
+				aspect-ratio: 4/5;
+				overflow: hidden;
+			}
+			.about-image img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				filter: grayscale(0.2) contrast(1.05);
+				transition:
+					transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+					filter 0.6s;
+			}
+			.about-image:hover img {
+				transform: scale(1.05);
+				filter: grayscale(0) contrast(1.1);
+			}
+			.about-image::after {
+				content: "EST. 2001";
+				position: absolute;
+				bottom: 20px;
+				left: 20px;
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 18px;
+				letter-spacing: 0.15em;
+				background: var(--accent);
+				color: var(--bg);
+				padding: 6px 12px;
+				z-index: 2;
+			}
+
+			.facts {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 30px 40px;
+				margin-top: 50px;
+				border-top: 1px solid var(--line);
+				padding-top: 40px;
+			}
+			.fact {
+				border-left: 2px solid var(--accent);
+				padding-left: 18px;
+			}
+			.fact .k {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 36px;
+				line-height: 1;
+				color: var(--ink);
+			}
+			.fact .v {
+				font-size: 13px;
+				color: var(--ink-mute);
+				text-transform: uppercase;
+				letter-spacing: 0.12em;
+				margin-top: 6px;
+			}
+
+			/* ======= REFERENCJE ======= */
+			#referencje {
+				background: var(--bg);
+				position: relative;
+				overflow: hidden;
+			}
+			#referencje::before {
+				content: '"';
+				position: absolute;
+				top: -120px;
+				left: -20px;
+				font-family: "Archivo", sans-serif;
+				font-weight: 900;
+				font-size: clamp(280px, 38vw, 520px);
+				color: var(--surface);
+				line-height: 0.8;
+				pointer-events: none;
+				z-index: 0;
+			}
+
+			.ref-stage {
+				position: relative;
+				z-index: 1;
+			}
+			.ref-track {
+				position: relative;
+				min-height: 360px;
+			}
+			.ref-slide {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				opacity: 0;
+				visibility: hidden;
+				transition:
+					opacity 0.6s ease,
+					transform 0.6s ease,
+					visibility 0.6s;
+				transform: translateY(20px);
+				display: grid;
+				grid-template-columns: 1fr 380px;
+				gap: 80px;
+				align-items: start;
+			}
+			.ref-slide.active {
+				opacity: 1;
+				visibility: visible;
+				transform: translateY(0);
+				position: relative;
+			}
+
+			.ref-quote {
+				font-family: "Manrope", sans-serif;
+				font-weight: 300;
+				font-size: clamp(20px, 2.2vw, 28px);
+				line-height: 1.5;
+				color: var(--ink);
+				letter-spacing: -0.005em;
+			}
+			.ref-quote em {
+				font-style: normal;
+				background: linear-gradient(
+					120deg,
+					transparent 0% 60%,
+					rgba(245, 180, 0, 0.18) 60% 100%
+				);
+				padding: 0 2px;
+			}
+			.ref-quote::before {
+				content: "“";
+				display: block;
+				font-family: "Archivo", sans-serif;
+				font-weight: 900;
+				font-size: 80px;
+				line-height: 0.6;
+				color: var(--accent);
+				margin-bottom: 20px;
+			}
+			.ref-quote .ellipsis {
+				color: var(--ink-mute);
+				font-weight: 400;
+				letter-spacing: 0.1em;
+				margin: 0 4px;
+			}
+
+			.ref-meta {
+				border-left: 2px solid var(--accent);
+				padding: 6px 0 6px 24px;
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				position: sticky;
+				top: 120px;
+			}
+			.ref-meta .lab {
+				font-size: 11px;
+				letter-spacing: 0.22em;
+				text-transform: uppercase;
+				color: var(--accent);
+				font-weight: 700;
+			}
+			.ref-meta .author {
+				font-family: "Archivo", sans-serif;
+				font-weight: 800;
+				font-size: 22px;
+				line-height: 1.2;
+				letter-spacing: -0.005em;
+				color: var(--ink);
+				text-transform: uppercase;
+			}
+			.ref-meta .project {
+				font-size: 14px;
+				color: var(--ink-dim);
+				line-height: 1.6;
+			}
+			.ref-meta .project strong {
+				color: var(--ink);
+				font-weight: 600;
+			}
+			.ref-meta .year {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 28px;
+				letter-spacing: 0.1em;
+				color: var(--ink-mute);
+				margin-top: 4px;
+			}
+
+			/* CONTROLS */
+			.ref-controls {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-top: 60px;
+				padding-top: 30px;
+				border-top: 1px solid var(--line);
+				flex-wrap: wrap;
+				gap: 20px;
+			}
+			.ref-counter {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 28px;
+				letter-spacing: 0.1em;
+				color: var(--ink-mute);
+			}
+			.ref-counter .current {
+				color: var(--accent);
+			}
+
+			.ref-dots {
+				display: flex;
+				gap: 12px;
+				flex: 1;
+				justify-content: center;
+				max-width: 400px;
+				margin: 0 auto;
+			}
+			.ref-dot {
+				flex: 1;
+				height: 2px;
+				background: var(--line);
+				border: none;
+				cursor: pointer;
+				padding: 14px 0;
+				position: relative;
+				transition: background 0.3s;
+			}
+			.ref-dot::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 50%;
+				height: 2px;
+				background: var(--line);
+				transform: translateY(-50%);
+				transition: background 0.3s;
+			}
+			.ref-dot.active::before {
+				background: var(--accent);
+			}
+
+			.ref-arrows {
+				display: flex;
+				gap: 10px;
+			}
+			.ref-arrow {
+				width: 48px;
+				height: 48px;
+				background: transparent;
+				border: 1px solid var(--line);
+				color: var(--ink);
+				cursor: pointer;
+				display: grid;
+				place-items: center;
+				transition: all 0.25s;
+			}
+			.ref-arrow:hover {
+				background: var(--accent);
+				color: var(--bg);
+				border-color: var(--accent);
+			}
+			.ref-arrow:disabled {
+				opacity: 0.3;
+				cursor: not-allowed;
+			}
+
+			@media (max-width: 900px) {
+				.ref-slide {
+					grid-template-columns: 1fr;
+					gap: 36px;
+				}
+				.ref-meta {
+					position: static;
+				}
+				.ref-track {
+					min-height: 480px;
+				}
+				.ref-controls {
+					flex-direction: column;
+					align-items: stretch;
+				}
+				.ref-dots {
+					max-width: none;
+				}
+				.ref-arrows {
+					justify-content: center;
+				}
+			}
+
+			/* ======= OFERTA ======= */
+			#oferta {
+				background: var(--bg-2);
+			}
+
+			.services-grid {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 1px;
+				background: var(--line);
+				border: 1px solid var(--line);
+			}
+			.service {
+				background: var(--bg-2);
+				padding: 50px 40px;
+				position: relative;
+				transition: background 0.4s;
+				cursor: pointer;
+				overflow: hidden;
+			}
+			.service::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 2px;
+				background: var(--accent);
+				transform: scaleX(0);
+				transform-origin: left;
+				transition: transform 0.5s cubic-bezier(0.7, 0, 0.2, 1);
+			}
+			.service:hover {
+				background: var(--surface);
+			}
+			.service:hover::before {
+				transform: scaleX(1);
+			}
+
+			.service .num {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 14px;
+				letter-spacing: 0.2em;
+				color: var(--ink-mute);
+				margin-bottom: 24px;
+			}
+			.service h3 {
+				font-family: "Archivo", sans-serif;
+				font-weight: 800;
+				font-size: 28px;
+				line-height: 1.1;
+				letter-spacing: -0.01em;
+				text-transform: uppercase;
+				color: var(--ink);
+				margin-bottom: 18px;
+				transition: color 0.3s;
+			}
+			.service:hover h3 {
+				color: var(--accent);
+			}
+			.service p {
+				color: var(--ink-dim);
+				font-size: 15px;
+				line-height: 1.7;
+			}
+			.service .icon {
+				position: absolute;
+				top: 40px;
+				right: 40px;
+				width: 32px;
+				height: 32px;
+				opacity: 0.25;
+				transition:
+					opacity 0.3s,
+					transform 0.3s;
+			}
+			.service:hover .icon {
+				opacity: 1;
+				transform: rotate(45deg);
+				color: var(--accent);
+			}
+
+			.oferta-cta {
+				margin-top: 60px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 24px;
+				padding: 30px 0;
+				border-top: 1px solid var(--line);
+			}
+			.oferta-cta p {
+				color: var(--ink-dim);
+				font-size: 18px;
+				max-width: 50ch;
+			}
+			.oferta-cta p strong {
+				color: var(--accent);
+			}
+
+			/* ======= REALIZACJE ======= */
+			#realizacje {
+				background: var(--bg);
+			}
+			.gallery {
+				display: grid;
+				grid-template-columns: repeat(6, 1fr);
+				grid-auto-rows: 200px;
+				gap: 12px;
+			}
+			.gallery-item {
+				position: relative;
+				overflow: hidden;
+				cursor: pointer;
+				background: var(--surface);
+			}
+			.gallery-item img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				filter: grayscale(0.4) brightness(0.85);
+				transition:
+					transform 1s cubic-bezier(0.2, 0.8, 0.2, 1),
+					filter 0.5s;
+			}
+			.gallery-item:hover img {
+				transform: scale(1.08);
+				filter: grayscale(0) brightness(1);
+			}
+			.gallery-item .ov {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				align-items: flex-end;
+				padding: 18px;
+				background: linear-gradient(
+					to top,
+					rgba(0, 0, 0, 0.85) 0%,
+					transparent 60%
+				);
+				opacity: 0;
+				transition: opacity 0.35s;
+			}
+			.gallery-item:hover .ov {
+				opacity: 1;
+			}
+			.gallery-item .ov h4 {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 22px;
+				letter-spacing: 0.06em;
+				color: var(--ink);
+			}
+			.gallery-item .ov h4 small {
+				display: block;
+				font-family: "Manrope", sans-serif;
+				font-size: 11px;
+				letter-spacing: 0.15em;
+				color: var(--accent);
+				text-transform: uppercase;
+				font-weight: 600;
+				margin-bottom: 4px;
+			}
+
+			.g-tall {
+				grid-row: span 2;
+			}
+			.g-wide {
+				grid-column: span 2;
+			}
+			.g-big {
+				grid-column: span 2;
+				grid-row: span 2;
+			}
+
+			/* ======= KONTAKT ======= */
+			#kontakt {
+				background: var(--bg-2);
+				position: relative;
+				overflow: hidden;
+			}
+			#kontakt::before {
+				content: "KONTAKT";
+				position: absolute;
+				top: -20px;
+				right: -40px;
+				font-family: "Archivo", sans-serif;
+				font-weight: 900;
+				font-size: clamp(120px, 22vw, 320px);
+				color: var(--surface);
+				letter-spacing: -0.04em;
+				pointer-events: none;
+				z-index: 0;
+				line-height: 1;
+			}
+
+			.contact-wrap {
+				position: relative;
+				z-index: 1;
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 80px;
+			}
+			.contact-info h3 {
+				font-family: "Archivo", sans-serif;
+				font-weight: 900;
+				font-size: 36px;
+				text-transform: uppercase;
+				margin-bottom: 30px;
+				letter-spacing: -0.01em;
+			}
+			.contact-info > p {
+				color: var(--ink-dim);
+				font-size: 16px;
+				margin-bottom: 40px;
+				max-width: 42ch;
+			}
+
+			.contact-card {
+				border: 1px solid var(--line);
+				background: var(--bg);
+				padding: 36px;
+				display: flex;
+				flex-direction: column;
+				gap: 22px;
+			}
+			.contact-row {
+				display: flex;
+				gap: 18px;
+				align-items: flex-start;
+				padding-bottom: 22px;
+				border-bottom: 1px solid var(--line);
+			}
+			.contact-row:last-child {
+				border-bottom: none;
+				padding-bottom: 0;
+			}
+			.contact-row .ico {
+				width: 38px;
+				height: 38px;
+				background: var(--accent);
+				color: var(--bg);
+				display: grid;
+				place-items: center;
+				flex-shrink: 0;
+			}
+			.contact-row .lab {
+				font-size: 11px;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				color: var(--ink-mute);
+				font-weight: 700;
+				margin-bottom: 4px;
+			}
+			.contact-row .val {
+				font-size: 17px;
+				color: var(--ink);
+				font-weight: 600;
+				text-decoration: none;
+				transition: color 0.25s;
+			}
+			.contact-row a.val:hover {
+				color: var(--accent);
+			}
+
+			.map-wrap {
+				position: relative;
+				aspect-ratio: 1;
+				overflow: hidden;
+				border: 1px solid var(--line);
+			}
+			.map-wrap iframe {
+				width: 100%;
+				height: 100%;
+				border: 0;
+				filter: grayscale(0.7) invert(0.92) hue-rotate(180deg)
+					contrast(0.85);
+			}
+			.map-wrap .pin {
+				position: absolute;
+				top: 20px;
+				left: 20px;
+				background: var(--accent);
+				color: var(--bg);
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 14px;
+				letter-spacing: 0.15em;
+				padding: 6px 12px;
+				z-index: 2;
+			}
+
+			/* ======= FOOTER ======= */
+			footer {
+				background: var(--bg);
+				border-top: 1px solid var(--line);
+				padding: 80px 40px 30px;
+			}
+			.footer-grid {
+				max-width: var(--max);
+				margin: 0 auto;
+				display: grid;
+				grid-template-columns: 1.4fr 1fr 1fr 1fr;
+				gap: 60px;
+				padding-bottom: 60px;
+				border-bottom: 1px solid var(--line);
+			}
+			.footer-brand {
+				font-family: "Bebas Neue", sans-serif;
+				font-size: 42px;
+				letter-spacing: 0.06em;
+				margin-bottom: 16px;
+				display: flex;
+				align-items: baseline;
+			}
+			.footer-brand .dash {
+				width: 22px;
+				height: 6px;
+				background: var(--accent);
+				margin: 0 4px;
+				display: inline-block;
+				transform: translateY(-6px);
+			}
+			.footer-tag {
+				color: var(--ink-dim);
+				font-size: 14px;
+				line-height: 1.7;
+				max-width: 38ch;
+			}
+
+			.footer-col h5 {
+				font-size: 11px;
+				letter-spacing: 0.2em;
+				text-transform: uppercase;
+				color: var(--accent);
+				font-weight: 700;
+				margin-bottom: 20px;
+			}
+			.footer-col ul {
+				list-style: none;
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+			.footer-col a,
+			.footer-col li {
+				color: var(--ink-dim);
+				text-decoration: none;
+				font-size: 14px;
+				transition: color 0.25s;
+			}
+			.footer-col a:hover {
+				color: var(--accent);
+			}
+
+			.footer-hours {
+				display: flex;
+				justify-content: space-between;
+				font-size: 14px;
+				color: var(--ink-dim);
+				padding: 8px 0;
+				border-bottom: 1px dashed var(--line);
+			}
+			.footer-hours:last-child {
+				border-bottom: none;
+			}
+			.footer-hours strong {
+				color: var(--ink);
+				font-weight: 600;
+			}
+
+			.footer-bottom {
+				max-width: var(--max);
+				margin: 30px auto 0;
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				gap: 12px;
+				font-size: 12px;
+				color: var(--ink-mute);
+				letter-spacing: 0.04em;
+			}
+
+			/* ======= REVEAL ======= */
+			.reveal {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+
+			/* ======= RESPONSIVE ======= */
+			@media (max-width: 900px) {
+				header {
+					padding: 16px 20px;
+				}
+				header.scrolled {
+					padding: 12px 20px;
+				}
+				nav,
+				.nav-cta {
+					display: none;
+				}
+				.menu-toggle {
+					display: flex;
+				}
+
+				/* mobile nav — zawsze w DOM, GSAP kontroluje widoczność */
+				nav#nav {
+					display: flex;
+					position: fixed;
+					top: 60px;
+					left: 0;
+					right: 0;
+					background: var(--bg);
+					border-bottom: 1px solid var(--line);
+					padding: 20px;
+					/* domyślnie schowany */
+					clip-path: inset(0 0 100% 0);
+					pointer-events: none;
+					visibility: hidden;
+				}
+				nav#nav.is-open {
+					pointer-events: auto;
+					visibility: visible;
+				}
+				nav#nav ul {
+					flex-direction: column;
+					width: 100%;
+					gap: 0;
+				}
+				nav#nav a {
+					padding: 16px 0;
+					border-bottom: 1px solid var(--line);
+					display: block;
+					opacity: 0;
+					transform: translateY(-10px);
+				}
+
+				/* hamburger → X */
+				.menu-toggle span:nth-child(1) {
+					transform-origin: center;
+				}
+				.menu-toggle span:nth-child(2) {
+					transform-origin: center;
+				}
+				.menu-toggle span:nth-child(3) {
+					transform-origin: center;
+				}
+				.menu-toggle.is-open span:nth-child(1) {
+					transform: translateY(8px) rotate(45deg);
+				}
+				.menu-toggle.is-open span:nth-child(2) {
+					transform: scaleX(0);
+					opacity: 0;
+				}
+				.menu-toggle.is-open span:nth-child(3) {
+					transform: translateY(-8px) rotate(-45deg);
+				}
+
+				.hero {
+					padding: 100px 20px 80px;
+				}
+				.hero-inner {
+					grid-template-columns: 1fr;
+					gap: 40px;
+				}
+				.hero-aside {
+					max-width: 100%;
+				}
+
+				section.s {
+					padding: 90px 20px;
+				}
+				.section-num {
+					right: 20px;
+					top: 40px;
+				}
+
+				.about-grid {
+					grid-template-columns: 1fr;
+					gap: 50px;
+				}
+				.services-grid {
+					grid-template-columns: 1fr;
+				}
+				.gallery {
+					grid-template-columns: repeat(2, 1fr);
+					grid-auto-rows: 160px;
+				}
+				.g-big {
+					grid-column: span 2;
+				}
+				.g-wide {
+					grid-column: span 2;
+				}
+
+				.contact-wrap {
+					grid-template-columns: 1fr;
+					gap: 40px;
+				}
+				footer {
+					padding: 60px 20px 30px;
+				}
+				.footer-grid {
+					grid-template-columns: 1fr 1fr;
+					gap: 40px;
+				}
+				.marquee-track {
+					font-size: 22px;
+					gap: 30px;
+				}
+				.marquee-track span {
+					gap: 30px;
+				}
+			}
+
+			@media (max-width: 540px) {
+				.footer-grid {
+					grid-template-columns: 1fr;
+				}
+				.facts {
+					grid-template-columns: 1fr;
+				}
+				.hero-stats {
+					grid-template-columns: 1fr 1fr;
+					gap: 20px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- LOADER -->
+		<div id="loader">
+			<div class="loader-logo">
+				LEW<span class="dash"></span><span class="accent">BUD</span>
+			</div>
+			<div class="loader-bar"></div>
+		</div>
+
+		<div class="grain"></div>
+
+		<!-- HEADER -->
+		<header id="header">
+			<a href="#home" class="brand">LEW<span class="dash"></span>BUD</a>
+			<nav id="nav">
+				<ul>
+					<li>
+						<a href="#home" class="nav-link active"
+							>Strona główna</a
+						>
+					</li>
+					<li><a href="#firma" class="nav-link">O firmie</a></li>
+					<li><a href="#oferta" class="nav-link">Nasza oferta</a></li>
+					<li>
+						<a href="#realizacje" class="nav-link">Realizacje</a>
+					</li>
+					<li><a href="#kontakt" class="nav-link">Kontakt</a></li>
+				</ul>
+			</nav>
+			<a href="#kontakt" class="nav-cta">Wycena +</a>
+			<button class="menu-toggle" id="menuToggle" aria-label="Menu">
+				<span></span><span></span><span></span>
+			</button>
+		</header>
+
+		<!-- HERO -->
+		<section class="hero" id="home">
+			<div class="hero-bg"></div>
+			<div class="hero-inner">
+				<div>
+					<div class="hero-meta reveal">
+						<div class="hero-eyebrow">
+							Sp. z o.o. — Pawłówko / Chojnice
+						</div>
+					</div>
+					<h1 class="hero-title">
+						<span class="line"><span>Budujemy</span></span>
+						<span class="line"><span>solidnie.</span></span>
+						<span class="line"
+							><span><em>Od 2001.</em></span></span
+						>
+					</h1>
+					<div class="reveal" style="margin-top: 40px">
+						<div class="hero-cta-row">
+							<a href="#oferta" class="btn btn-primary"
+								>Zobacz ofertę <span class="arrow">→</span></a
+							>
+							<a href="#realizacje" class="btn btn-ghost"
+								>Realizacje</a
+							>
+						</div>
+					</div>
+				</div>
+				<aside class="hero-aside reveal">
+					<p>
+						Usługi remontowo-budowlane wysokiej jakości —
+						kompleksowa budowa domów, maszynowe posadzki i tynki,
+						prace wykończeniowe.
+					</p>
+					<div class="hero-stats">
+						<div>
+							<div class="num">24+</div>
+							<div class="lbl">Lata doświadczenia</div>
+						</div>
+						<div>
+							<div class="num">100%</div>
+							<div class="lbl">Z gwarancją</div>
+						</div>
+					</div>
+				</aside>
+			</div>
+			<div class="scroll-hint">scroll</div>
+		</section>
+
+		<!-- MARQUEE -->
+		<div class="marquee">
+			<div class="marquee-track">
+				<span
+					>BUDOWA DOMÓW POD KLUCZ <span class="dot"></span> MASZYNOWE
+					POSADZKI <span class="dot"></span> TYNKI CEMENTOWO-WAPIENNE
+					<span class="dot"></span> PRACE WYKOŃCZENIOWE
+					<span class="dot"></span
+				></span>
+				<span
+					>BUDOWA DOMÓW POD KLUCZ <span class="dot"></span> MASZYNOWE
+					POSADZKI <span class="dot"></span> TYNKI CEMENTOWO-WAPIENNE
+					<span class="dot"></span> PRACE WYKOŃCZENIOWE
+					<span class="dot"></span
+				></span>
+			</div>
+		</div>
+
+		<!-- O FIRMIE -->
+		<section class="s" id="firma">
+			<div class="section-num">— 01 / O firmie</div>
+			<div class="container">
+				<div class="section-label reveal">Kim jesteśmy</div>
+				<h2 class="section-title reveal">
+					Ponad <em>dwie dekady</em> na placach budów.
+				</h2>
+
+				<div class="about-grid">
+					<div class="about-text reveal">
+						<p>
+							<strong>Lew-Bud Sp. z o.o.</strong> powstała w 2001
+							roku. Siedziba firmy znajduje się w Pawłówku koło
+							Chojnic przy ulicy Cichej 9, a działalność
+							prowadzimy na terenie całej Polski.
+						</p>
+						<p>
+							Prace wykonujemy z materiałów wysokiej jakości —
+							wszystkie posiadają certyfikaty, atesty i aprobaty
+							techniczne. Współpraca z producentami i hurtowniami
+							pozwala nam zachować wysoką jakość przy
+							konkurencyjnych cenach.
+						</p>
+						<p>
+							Na wszystkie wykonane obiekty udzielamy
+							<strong>gwarancji</strong>.
+						</p>
+
+						<div class="facts">
+							<div class="fact">
+								<div class="k">2001</div>
+								<div class="v">Rok założenia</div>
+							</div>
+							<div class="fact">
+								<div class="k">PL</div>
+								<div class="v">Cały kraj</div>
+							</div>
+							<div class="fact">
+								<div class="k">Sp. z o.o.</div>
+								<div class="v">Forma prawna</div>
+							</div>
+							<div class="fact">
+								<div class="k">Gwarancja</div>
+								<div class="v">Na każdy obiekt</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="about-image reveal">
+						<img
+							src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=85"
+							alt="Realizacje Lew-Bud"
+							loading="lazy"
+						/>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- REFERENCJE -->
+		<section class="s" id="referencje">
+			<div class="section-num">— 02 / Referencje</div>
+			<div class="container">
+				<div class="section-label reveal">Co mówią klienci</div>
+				<h2 class="section-title reveal">Listy <em>polecające</em>.</h2>
+
+				<div class="ref-stage reveal">
+					<div class="ref-track" id="refTrack">
+						<article class="ref-slide active" data-index="0">
+							<blockquote class="ref-quote">
+								Niniejszym udzielamy dla firmy Lew-Bud
+								rekomendacji za wykonanie robót budowlanych
+								związanych z nadbudową budynku hotelowego WALTER
+								w Toruniu.
+								<span class="ellipsis">[...]</span>
+								Prace wykonano zgodnie z umową oraz sztuką
+								budowlaną. Współpraca przebiegała bardzo
+								sprawnie.
+								<span class="ellipsis">[...]</span>
+								ZHUP WALTER udziela Wykonawcy referencji za
+								profesjonalne i rzetelne wykonanie robót oraz
+								współpracę.
+							</blockquote>
+							<aside class="ref-meta">
+								<div class="lab">Wystawca</div>
+								<div class="author">ZHUP Walter</div>
+								<div class="project">
+									<strong>Nadbudowa budynku hotelowego</strong
+									><br />ul. Droga Starotoruńska 5a, Toruń
+								</div>
+								<div class="year">— Toruń</div>
+							</aside>
+						</article>
+
+						<article class="ref-slide" data-index="1">
+							<blockquote class="ref-quote">
+								Miejski Zakład Komunikacji w Chojnicach składa
+								podziękowanie firmie Lew-Bud za wykonanie
+								modernizacji hali warsztatowej. Roboty
+								prowadzone były w utrudnionych warunkach — w
+								ruchu ciągłym, bez zatrzymania prac warsztatu.
+								<span class="ellipsis">[...]</span>
+								Wykonawca wykazał się profesjonalnością,
+								dotrzymując terminu zgodnie z umową, pomimo
+								robót dodatkowych wynikłych w trakcie
+								realizacji.
+							</blockquote>
+							<aside class="ref-meta">
+								<div class="lab">Wystawca</div>
+								<div class="author">MZK Sp. z o.o.</div>
+								<div class="project">
+									<strong
+										>Modernizacja hali warsztatowej</strong
+									><br />w ruchu ciągłym, bez przestojów
+								</div>
+								<div class="year">— Chojnice · 2008</div>
+							</aside>
+						</article>
+
+						<article class="ref-slide" data-index="2">
+							<blockquote class="ref-quote">
+								Niniejszym udzielamy dla firmy Lew-Bud
+								rekomendacji za wykonanie robót remontowych w
+								budynku po byłym LO nr VII (docelowo ZSPS i CH w
+								Gdańsku, ul. Smoleńska 6/8).
+								<span class="ellipsis">[...]</span>
+								Zakład Lew-Bud wykonał prace rzetelnie,
+								solidnie, terminowo, zgodnie ze sztuką budowlaną
+								i należytą dbałością. Współpraca przebiegała
+								bardzo sprawnie.
+							</blockquote>
+							<aside class="ref-meta">
+								<div class="lab">Wystawca</div>
+								<div class="author">
+									Z. Rudziński<br />Zakład Blacharsko-Dekarski
+								</div>
+								<div class="project">
+									<strong>Roboty remontowe — ZSPS i CH</strong
+									><br />na zlecenie Dyrekcji Rozbudowy Miasta
+									Gdańska
+								</div>
+								<div class="year">— Gdańsk</div>
+							</aside>
+						</article>
+
+						<article class="ref-slide" data-index="3">
+							<blockquote class="ref-quote">
+								Niniejszym udzielamy dla firmy Lew-Bud
+								rekomendacji za wykonanie robót remontowych na
+								budynku Szkół Elektrycznych i Elektronicznych w
+								Gdańsku, w ramach zadania „Rozbudowa i
+								modernizacja pomieszczeń biurowych jednostek
+								gminy".
+								<span class="ellipsis">[...]</span>
+								Zakład Lew-Bud wykonał prace rzetelnie,
+								solidnie, terminowo, zgodnie ze sztuką budowlaną
+								i należytą dbałością.
+							</blockquote>
+							<aside class="ref-meta">
+								<div class="lab">Wystawca</div>
+								<div class="author">
+									Z. Rudziński<br />Zakład Blacharsko-Dekarski
+								</div>
+								<div class="project">
+									<strong
+										>Szkoły Elektryczne i
+										Elektroniczne</strong
+									><br />ul. Grunwaldzka 238B, Gdańsk
+								</div>
+								<div class="year">— Gdańsk</div>
+							</aside>
+						</article>
+					</div>
+
+					<div class="ref-controls">
+						<div class="ref-counter">
+							<span class="current">01</span> /
+							<span class="total">04</span>
+						</div>
+						<div class="ref-dots" role="tablist">
+							<button
+								class="ref-dot active"
+								data-go="0"
+								aria-label="Referencja 1"
+							></button>
+							<button
+								class="ref-dot"
+								data-go="1"
+								aria-label="Referencja 2"
+							></button>
+							<button
+								class="ref-dot"
+								data-go="2"
+								aria-label="Referencja 3"
+							></button>
+							<button
+								class="ref-dot"
+								data-go="3"
+								aria-label="Referencja 4"
+							></button>
+						</div>
+						<div class="ref-arrows">
+							<button
+								class="ref-arrow"
+								id="refPrev"
+								aria-label="Poprzednia"
+							>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path d="M19 12H5M12 19l-7-7 7-7" />
+								</svg>
+							</button>
+							<button
+								class="ref-arrow"
+								id="refNext"
+								aria-label="Następna"
+							>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path d="M5 12h14M12 5l7 7-7 7" />
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- OFERTA -->
+		<section class="s" id="oferta">
+			<div class="section-num">— 03 / Oferta</div>
+			<div class="container">
+				<div class="section-label reveal">Co robimy</div>
+				<h2 class="section-title reveal">Zakres <em>usług</em>.</h2>
+
+				<div class="services-grid">
+					<article class="service reveal">
+						<div class="num">01</div>
+						<svg
+							class="icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21V12h6v9" />
+						</svg>
+						<h3>Budowa domów pod klucz</h3>
+						<p>
+							Kompleksowa realizacja domów jednorodzinnych i
+							innych obiektów — od fundamentów po wykończenie.
+							Pełna koordynacja, wszystkie branże.
+						</p>
+					</article>
+
+					<article class="service reveal">
+						<div class="num">02</div>
+						<svg
+							class="icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<path d="M3 17h18M3 12h18M3 7h18M5 21h14" />
+						</svg>
+						<h3>Maszynowe wylewanie posadzek</h3>
+						<p>
+							Posadzki mieszkaniowe i przemysłowe wykonywane
+							profesjonalnym sprzętem — szybko, równo i wydajnie,
+							z gwarancją równej powierzchni.
+						</p>
+					</article>
+
+					<article class="service reveal">
+						<div class="num">03</div>
+						<svg
+							class="icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<rect x="3" y="3" width="18" height="18" />
+							<path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+						</svg>
+						<h3>Tynki cementowo-wapienne</h3>
+						<p>
+							Maszynowe tynki cementowo-wapienne na ściany
+							wewnętrzne i zewnętrzne. Trwałe, oddychające, gotowe
+							pod malowanie i okładziny.
+						</p>
+					</article>
+
+					<article class="service reveal">
+						<div class="num">04</div>
+						<svg
+							class="icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<path
+								d="M14 2v6h6M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
+							/>
+							<path d="M9 13h6M9 17h6" />
+						</svg>
+						<h3>Remonty i przebudowy</h3>
+						<p>
+							Remonty mieszkań, modernizacje obiektów użytkowych,
+							przebudowy, adaptacje. Roboty prowadzimy także w
+							obiektach pracujących.
+						</p>
+					</article>
+
+					<article class="service reveal">
+						<div class="num">05</div>
+						<svg
+							class="icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<path d="M2 7l10-5 10 5v10l-10 5L2 17V7z" />
+							<path d="M12 12L22 7M12 12v10M12 12L2 7" />
+						</svg>
+						<h3>Posadzki przemysłowe</h3>
+						<p>
+							Wytrzymałe nawierzchnie do hal, magazynów i obiektów
+							produkcyjnych. Realizujemy nawet w utrudnionych
+							warunkach ruchu ciągłego.
+						</p>
+					</article>
+
+					<article class="service reveal">
+						<div class="num">06</div>
+						<svg
+							class="icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<circle cx="12" cy="12" r="9" />
+							<path d="M8 12l3 3 5-6" />
+						</svg>
+						<h3>Prace wykończeniowe</h3>
+						<p>
+							Glazura, tynki strukturalne, prace malarskie, sufity
+							— wszystko, co decyduje o ostatecznym efekcie
+							wnętrza.
+						</p>
+					</article>
+				</div>
+
+				<div class="oferta-cta reveal">
+					<p>
+						Dysponujemy <strong>profesjonalnym sprzętem</strong> i
+						wyspecjalizowaną kadrą. Na wykonane obiekty udzielamy
+						gwarancji.
+					</p>
+					<a href="#kontakt" class="btn btn-primary"
+						>Zapytaj o wycenę <span class="arrow">→</span></a
+					>
+				</div>
+			</div>
+		</section>
+
+		<!-- REALIZACJE -->
+		<section class="s" id="realizacje">
+			<div class="section-num">— 04 / Realizacje</div>
+			<div class="container">
+				<div class="section-label reveal">Portfolio</div>
+				<h2 class="section-title reveal">
+					Wybrane <em>realizacje</em>.
+				</h2>
+
+				<div class="gallery">
+					<!-- g-big: 2col × 2row — duże, panoramiczne. Modernizacja biurowca -->
+					<div class="gallery-item g-big reveal">
+						<img
+							src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=85"
+							alt="Realizacja 1"
+							loading="lazy"
+						/>
+						<div class="ov">
+							<h4>
+								<small>Obiekt biurowy</small>Modernizacja
+								kompleksowa
+							</h4>
+						</div>
+					</div>
+
+					<!-- g-tall: 1col × 2row — pionowe. Dom jednorodzinny -->
+					<div class="gallery-item g-tall reveal">
+						<img
+							src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&q=85"
+							alt="Realizacja 2"
+							loading="lazy"
+						/>
+						<div class="ov">
+							<h4>
+								<small>Dom jednorodzinny</small>Budowa pod klucz
+							</h4>
+						</div>
+					</div>
+
+					<!-- 1×1 — Posadzka przemysłowa / hala -->
+					<div class="gallery-item reveal">
+						<img
+							src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=85"
+							alt="Realizacja 3"
+							loading="lazy"
+						/>
+						<div class="ov">
+							<h4><small>Hala</small>Posadzka przemysłowa</h4>
+						</div>
+					</div>
+
+					<!-- 1×1 — Prace wykończeniowe, tynki -->
+					<div class="gallery-item reveal">
+						<img
+							src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85"
+							alt="Realizacja 4"
+							loading="lazy"
+						/>
+						<div class="ov">
+							<h4><small>Wnętrze</small>Prace wykończeniowe</h4>
+						</div>
+					</div>
+
+					<!-- g-wide: 2col × 1row — szerokie. Hotel / nadbudowa -->
+					<div class="gallery-item g-wide reveal">
+						<img
+							src="https://images.unsplash.com/photo-1555636222-cae831e670b3?w=1200&q=85"
+							alt="Realizacja 5"
+							loading="lazy"
+						/>
+						<div class="ov">
+							<h4>
+								<small>Budynek hotelowy WALTER, Toruń</small
+								>Nadbudowa
+							</h4>
+						</div>
+					</div>
+
+					<!-- g-wide: 2col × 1row — hala warsztatowa -->
+					<div class="gallery-item g-wide reveal">
+						<img
+							src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=85"
+							alt="Realizacja 6"
+							loading="lazy"
+						/>
+						<div class="ov">
+							<h4>
+								<small>Hala MZK Chojnice</small>Modernizacja
+								warsztatu
+							</h4>
+						</div>
+					</div>
+
+					<!-- g-tall: 1col × 2row — budynek po remoncie elewacji -->
+					<div class="gallery-item g-tall reveal">
+						<img
+							src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=85"
+							alt="Realizacja 7"
+							loading="lazy"
+						/>
+						<div class="ov">
+							<h4>
+								<small>ZSPS i CH Gdańsk</small>Roboty remontowe
+							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- KONTAKT -->
+		<section class="s" id="kontakt">
+			<div class="section-num">— 05 / Kontakt</div>
+			<div class="container">
+				<div class="section-label reveal">Porozmawiajmy</div>
+				<h2 class="section-title reveal">
+					Zacznij <em>projekt</em> z nami.
+				</h2>
+
+				<div class="contact-wrap">
+					<div class="contact-info">
+						<div class="reveal">
+							<h3>Lew-Bud Sp. z o.o.</h3>
+							<p>
+								Jeżeli są Państwo zainteresowani naszą ofertą —
+								zadzwoń, napisz lub odwiedź nas w siedzibie.
+								Odpowiadamy szybko i konkretnie.
+							</p>
+						</div>
+
+						<div class="contact-card reveal">
+							<div class="contact-row">
+								<div class="ico">
+									<svg
+										width="18"
+										height="18"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<path d="M3 21h18M5 21V8l7-5 7 5v13" />
+									</svg>
+								</div>
+								<div>
+									<div class="lab">Adres</div>
+									<div class="val">
+										Pawłówko, ul. Cicha 9<br />89-620
+										Chojnice
+									</div>
+								</div>
+							</div>
+
+							<div class="contact-row">
+								<div class="ico">
+									<svg
+										width="18"
+										height="18"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<path
+											d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"
+										/>
+									</svg>
+								</div>
+								<div>
+									<div class="lab">Telefon</div>
+									<a href="tel:+48505186384" class="val"
+										>505 186 384</a
+									>
+								</div>
+							</div>
+
+							<div class="contact-row">
+								<div class="ico">
+									<svg
+										width="18"
+										height="18"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<rect
+											x="2"
+											y="4"
+											width="20"
+											height="16"
+										/>
+										<path d="M22 6l-10 7L2 6" />
+									</svg>
+								</div>
+								<div>
+									<div class="lab">E-mail</div>
+									<a href="mailto:biuro@lewbud.pl" class="val"
+										>biuro@lewbud.pl</a
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="map-wrap reveal">
+						<span class="pin">PAWŁÓWKO</span>
+						<iframe
+							src="https://www.openstreetmap.org/export/embed.html?bbox=17.61077016592026%2C53.69140848271491%2C17.61524945497513%2C53.69276798325603&amp;layer=mapnik"
+							loading="lazy"
+							referrerpolicy="no-referrer-when-downgrade"
+							title="Mapa lokalizacji Lew-Bud"
+						></iframe>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- FOOTER -->
+		<footer>
+			<div class="footer-grid">
+				<div>
+					<div class="footer-brand">
+						LEW<span class="dash"></span>BUD
+					</div>
+					<p class="footer-tag">
+						Usługi remontowo-budowlane od 2001 roku. Budowa domów
+						pod klucz, maszynowe posadzki i tynki, prace
+						wykończeniowe — jakość i konkretne terminy.
+					</p>
+				</div>
+
+				<div class="footer-col">
+					<h5>Nawigacja</h5>
+					<ul>
+						<li><a href="#home">Strona główna</a></li>
+						<li><a href="#firma">O firmie</a></li>
+						<li><a href="#oferta">Nasza oferta</a></li>
+						<li><a href="#realizacje">Realizacje</a></li>
+						<li><a href="#kontakt">Kontakt</a></li>
+					</ul>
+				</div>
+
+				<div class="footer-col">
+					<h5>Specjalizacje</h5>
+					<ul>
+						<li>Budowa domów pod klucz</li>
+						<li>Posadzki maszynowe</li>
+						<li>Tynki cem.-wap.</li>
+						<li>Prace wykończeniowe</li>
+						<li>Remonty i modernizacje</li>
+					</ul>
+				</div>
+
+				<div class="footer-col">
+					<h5>Godziny pracy</h5>
+					<div class="footer-hours">
+						<span>Pon — Pt</span><strong>7:00 — 17:00</strong>
+					</div>
+					<div class="footer-hours">
+						<span>Sobota</span><strong>8:00 — 14:00</strong>
+					</div>
+					<div class="footer-hours">
+						<span>Niedziela</span><strong>nieczynne</strong>
+					</div>
+					<div class="footer-hours" style="margin-top: 14px">
+						<span>Obszar działania</span
+						><strong>cała Polska</strong>
+					</div>
+				</div>
+			</div>
+
+			<div class="footer-bottom">
+				<div>
+					© 2001–2026 LEW-BUD Sp. z o.o. — Wszelkie prawa zastrzeżone.
+				</div>
+				<div>NIP / KRS na życzenie · Pawłówko, ul. Cicha 9</div>
+			</div>
+		</footer>
+
+		<script>
+			/* ========== LOADER + REVEAL ========== */
+			const PAGE_OPEN_TIME = performance.now();
+			const MIN_LOADER = 1500;
+			let entranceFired = false;
+
+			function dismissLoader() {
+				if (entranceFired) return;
+				entranceFired = true;
+				document.getElementById("loader").classList.add("done");
+				runEntrance();
+			}
+
+			function scheduleDismiss() {
+				const elapsed = performance.now() - PAGE_OPEN_TIME;
+				const remaining = Math.max(0, MIN_LOADER - elapsed);
+				setTimeout(dismissLoader, remaining);
+			}
+
+			if (document.readyState === "complete") {
+				scheduleDismiss();
+			} else {
+				window.addEventListener("load", scheduleDismiss);
+			}
+
+			function runEntrance() {
+				if (typeof gsap === "undefined") return;
+
+				gsap.registerPlugin(ScrollTrigger);
+
+				/* HEADER FADE-IN FROM TOP */
+				gsap.from("#header", {
+					y: -40,
+					opacity: 0,
+					duration: 0.9,
+					ease: "power3.out",
+				});
+
+				/* HERO TITLE — line-by-line reveal (top → bottom) */
+				gsap.from(".hero-title .line span", {
+					yPercent: 110,
+					duration: 1.0,
+					stagger: 0.12,
+					ease: "power4.out",
+					delay: 0.15,
+				});
+
+				/* HERO META + ASIDE staggered fade-in */
+				gsap.from(".hero .reveal", {
+					y: 24,
+					opacity: 0,
+					duration: 0.9,
+					stagger: 0.12,
+					ease: "power3.out",
+					delay: 0.45,
+				});
+
+				/* SCROLL HINT */
+				gsap.from(".scroll-hint", {
+					opacity: 0,
+					y: 10,
+					duration: 0.8,
+					delay: 1.4,
+					ease: "power2.out",
+				});
+
+				/* MARQUEE */
+				gsap.from(".marquee", {
+					opacity: 0,
+					duration: 0.8,
+					delay: 0.7,
+					ease: "power2.out",
+				});
+
+				/* ALL OTHER REVEAL ELEMENTS — fade in from top to bottom on scroll */
+				document
+					.querySelectorAll("section.s .reveal, footer .reveal")
+					.forEach((el) => {
+						gsap.fromTo(
+							el,
+							{ opacity: 0, y: 36 },
+							{
+								opacity: 1,
+								y: 0,
+								duration: 0.9,
+								ease: "power3.out",
+								scrollTrigger: {
+									trigger: el,
+									start: "top 88%",
+									toggleActions: "play none none none",
+								},
+							},
+						);
+					});
+
+				/* GALLERY ITEMS - extra subtle stagger */
+				gsap.fromTo(
+					".gallery-item",
+					{ opacity: 0, y: 40, scale: 0.97 },
+					{
+						opacity: 1,
+						y: 0,
+						scale: 1,
+						duration: 0.8,
+						stagger: 0.07,
+						ease: "power3.out",
+						scrollTrigger: {
+							trigger: ".gallery",
+							start: "top 85%",
+						},
+					},
+				);
+
+				/* SERVICE CARDS stagger */
+				gsap.fromTo(
+					".service",
+					{ opacity: 0, y: 30 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 0.7,
+						stagger: 0.08,
+						ease: "power3.out",
+						scrollTrigger: {
+							trigger: ".services-grid",
+							start: "top 82%",
+						},
+					},
+				);
+
+				/* HERO BG subtle parallax */
+				gsap.to(".hero-bg", {
+					yPercent: 15,
+					ease: "none",
+					scrollTrigger: {
+						trigger: ".hero",
+						start: "top top",
+						end: "bottom top",
+						scrub: true,
+					},
+				});
+			}
+
+			/* ========== HEADER ON SCROLL ========== */
+			const header = document.getElementById("header");
+			window.addEventListener(
+				"scroll",
+				() => {
+					header.classList.toggle("scrolled", window.scrollY > 60);
+				},
+				{ passive: true },
+			);
+
+			/* ========== ACTIVE NAV LINK ON SCROLL ========== */
+			const sections = [
+				"home",
+				"firma",
+				"oferta",
+				"realizacje",
+				"kontakt",
+			];
+			const navLinks = document.querySelectorAll(".nav-link");
+
+			function updateActiveNav() {
+				const scrollY = window.scrollY + 200;
+				let current = "home";
+				for (const id of sections) {
+					const el = document.getElementById(id);
+					if (el && el.offsetTop <= scrollY) current = id;
+				}
+				navLinks.forEach((a) => {
+					a.classList.toggle(
+						"active",
+						a.getAttribute("href") === "#" + current,
+					);
+				});
+			}
+			window.addEventListener("scroll", updateActiveNav, {
+				passive: true,
+			});
+
+			/* ========== REFERENCJE CAROUSEL ========== */
+			(function initRefSlider() {
+				const slides = document.querySelectorAll(".ref-slide");
+				const dots = document.querySelectorAll(".ref-dot");
+				const prevBtn = document.getElementById("refPrev");
+				const nextBtn = document.getElementById("refNext");
+				const counter = document.querySelector(".ref-counter .current");
+				if (!slides.length) return;
+
+				let current = 0;
+				let autoTimer = null;
+				const total = slides.length;
+				const AUTO_MS = 7000;
+
+				function show(idx) {
+					current = (idx + total) % total;
+					slides.forEach((s) => s.classList.remove("active"));
+					dots.forEach((d) => d.classList.remove("active"));
+					slides[current].classList.add("active");
+					dots[current].classList.add("active");
+					if (counter)
+						counter.textContent = String(current + 1).padStart(
+							2,
+							"0",
+						);
+				}
+
+				function next() {
+					show(current + 1);
+				}
+				function prev() {
+					show(current - 1);
+				}
+
+				function startAuto() {
+					stopAuto();
+					autoTimer = setInterval(next, AUTO_MS);
+				}
+				function stopAuto() {
+					if (autoTimer) {
+						clearInterval(autoTimer);
+						autoTimer = null;
+					}
+				}
+
+				nextBtn?.addEventListener("click", () => {
+					next();
+					startAuto();
+				});
+				prevBtn?.addEventListener("click", () => {
+					prev();
+					startAuto();
+				});
+				dots.forEach((d) =>
+					d.addEventListener("click", () => {
+						show(parseInt(d.dataset.go, 10));
+						startAuto();
+					}),
+				);
+
+				/* pause on hover, keyboard nav when section in view */
+				const stage = document.querySelector(".ref-stage");
+				stage?.addEventListener("mouseenter", stopAuto);
+				stage?.addEventListener("mouseleave", startAuto);
+
+				document.addEventListener("keydown", (e) => {
+					const sec = document.getElementById("referencje");
+					if (!sec) return;
+					const r = sec.getBoundingClientRect();
+					const inView =
+						r.top < window.innerHeight * 0.6 &&
+						r.bottom > window.innerHeight * 0.3;
+					if (!inView) return;
+					if (e.key === "ArrowRight") {
+						next();
+						startAuto();
+					}
+					if (e.key === "ArrowLeft") {
+						prev();
+						startAuto();
+					}
+				});
+
+				/* start auto only after section comes into view */
+				const io = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((en) =>
+							en.isIntersecting ? startAuto() : stopAuto(),
+						);
+					},
+					{ threshold: 0.3 },
+				);
+				if (stage) io.observe(stage);
+			})();
+
+			/* ========== MOBILE MENU (GSAP) ========== */
+			(function initMobileMenu() {
+				const toggle = document.getElementById("menuToggle");
+				const nav = document.getElementById("nav");
+				if (!toggle || !nav) return;
+
+				const links = nav.querySelectorAll("a");
+				let isOpen = false;
+				let tl = null;
+
+				function buildTimeline() {
+					if (tl) tl.kill();
+					tl = gsap.timeline({ paused: true });
+
+					tl.to(nav, {
+						clipPath: "inset(0 0 0% 0)",
+						duration: 0.42,
+						ease: "power3.out",
+					}).to(
+						links,
+						{
+							opacity: 1,
+							y: 0,
+							duration: 0.32,
+							stagger: 0.055,
+							ease: "power2.out",
+						},
+						"-=0.18",
+					);
+
+					return tl;
+				}
+
+				function open() {
+					isOpen = true;
+					toggle.classList.add("is-open");
+					nav.classList.add("is-open");
+					buildTimeline().play();
+				}
+
+				function close() {
+					isOpen = false;
+					toggle.classList.remove("is-open");
+
+					gsap.to(links, {
+						opacity: 0,
+						y: -10,
+						duration: 0.2,
+						stagger: 0.03,
+						ease: "power2.in",
+						onComplete() {
+							gsap.to(nav, {
+								clipPath: "inset(0 0 100% 0)",
+								duration: 0.3,
+								ease: "power3.in",
+								onComplete() {
+									nav.classList.remove("is-open");
+								},
+							});
+						},
+					});
+				}
+
+				toggle.addEventListener("click", () =>
+					isOpen ? close() : open(),
+				);
+
+				links.forEach((a) =>
+					a.addEventListener("click", () => {
+						if (isOpen) close();
+					}),
+				);
+			})();
+		</script>
+	</body>
+</html>
