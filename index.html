@@ -263,7 +263,9 @@
 				width: 24px;
 				height: 2px;
 				background: var(--ink);
-				transition: transform 0.35s cubic-bezier(0.7,0,0.2,1), opacity 0.25s;
+				transition:
+					transform 0.35s cubic-bezier(0.7, 0, 0.2, 1),
+					opacity 0.25s;
 			}
 
 			/* ======= HERO ======= */
@@ -1100,7 +1102,7 @@
 			.contact-row {
 				display: flex;
 				gap: 18px;
-				align-items: flex-start;
+				align-items: center;
 				padding-bottom: 22px;
 				border-bottom: 1px solid var(--line);
 			}
@@ -1183,7 +1185,7 @@
 				letter-spacing: 0.06em;
 				margin-bottom: 16px;
 				display: flex;
-				align-items: baseline;
+				align-items: center;
 			}
 			.footer-brand .dash {
 				width: 22px;
@@ -1191,7 +1193,6 @@
 				background: var(--accent);
 				margin: 0 4px;
 				display: inline-block;
-				transform: translateY(-6px);
 			}
 			.footer-tag {
 				color: var(--ink-dim);
@@ -1279,7 +1280,7 @@
 				nav#nav {
 					display: flex;
 					position: fixed;
-					top: 60px;
+					top: 64px;
 					left: 0;
 					right: 0;
 					background: var(--bg);
@@ -1308,9 +1309,15 @@
 				}
 
 				/* hamburger → X */
-				.menu-toggle span:nth-child(1) { transform-origin: center; }
-				.menu-toggle span:nth-child(2) { transform-origin: center; }
-				.menu-toggle span:nth-child(3) { transform-origin: center; }
+				.menu-toggle span:nth-child(1) {
+					transform-origin: center;
+				}
+				.menu-toggle span:nth-child(2) {
+					transform-origin: center;
+				}
+				.menu-toggle span:nth-child(3) {
+					transform-origin: center;
+				}
 				.menu-toggle.is-open span:nth-child(1) {
 					transform: translateY(8px) rotate(45deg);
 				}
@@ -2253,8 +2260,6 @@
 						);
 					});
 
-
-
 				/* HERO BG subtle parallax */
 				gsap.to(".hero-bg", {
 					yPercent: 15,
@@ -2404,12 +2409,12 @@
 			/* ========== MOBILE MENU (GSAP) ========== */
 			(function initMobileMenu() {
 				const toggle = document.getElementById("menuToggle");
-				const nav    = document.getElementById("nav");
+				const nav = document.getElementById("nav");
 				if (!toggle || !nav) return;
 
 				const links = nav.querySelectorAll("a");
-				let isOpen  = false;
-				let tl      = null;
+				let isOpen = false;
+				let tl = null;
 
 				function buildTimeline() {
 					if (tl) tl.kill();
@@ -2419,14 +2424,17 @@
 						clipPath: "inset(0 0 0% 0)",
 						duration: 0.42,
 						ease: "power3.out",
-					})
-					.to(links, {
-						opacity: 1,
-						y: 0,
-						duration: 0.32,
-						stagger: 0.055,
-						ease: "power2.out",
-					}, "-=0.18");
+					}).to(
+						links,
+						{
+							opacity: 1,
+							y: 0,
+							duration: 0.32,
+							stagger: 0.055,
+							ease: "power2.out",
+						},
+						"-=0.18",
+					);
 
 					return tl;
 				}
@@ -2455,17 +2463,21 @@
 								ease: "power3.in",
 								onComplete() {
 									nav.classList.remove("is-open");
-								}
+								},
 							});
-						}
+						},
 					});
 				}
 
-				toggle.addEventListener("click", () => isOpen ? close() : open());
+				toggle.addEventListener("click", () =>
+					isOpen ? close() : open(),
+				);
 
-				links.forEach(a => a.addEventListener("click", () => {
-					if (isOpen) close();
-				}));
+				links.forEach((a) =>
+					a.addEventListener("click", () => {
+						if (isOpen) close();
+					}),
+				);
 			})();
 		</script>
 	</body>
